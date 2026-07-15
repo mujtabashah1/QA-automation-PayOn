@@ -49,6 +49,13 @@ export class TablesPage {
         // Download QR
         this.downloadQRButton = page.getByRole('button', { name: 'Download QR' });
 
+        // Cancel Reservation
+        this.cancelReservationButtons = page.getByRole('button', { name: 'Cancel' });
+
+        this.cancelReasonTextbox = page.getByRole('textbox', {name: 'Please enter the reason for'});
+
+        this.confirmCancelButton = page.getByRole('button', {name: 'Confirm'});
+
 
 
         
@@ -183,6 +190,31 @@ async downloadQR() {
     return await downloadPromise;
 }
 
+async cancelReservation(reason, index = 'random') {
+
+    await this.cancelReservationButtons.first().waitFor({
+        state: 'visible'
+    });
+
+    const count = await this.cancelReservationButtons.count();
+
+    if (count === 0) {
+        throw new Error('No reservations available to cancel.');
+    }
+
+    const selectedIndex =
+        index === 'random'
+            ? Math.floor(Math.random() * count)
+            : index;
+
+    await this.cancelReservationButtons
+        .nth(selectedIndex)
+        .click();
+
+    await this.cancelReasonTextbox.fill(reason);
+
+    await this.confirmCancelButton.click();
+}
     
     
 }
