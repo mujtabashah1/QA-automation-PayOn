@@ -37,6 +37,15 @@ export class TablesPage {
 
         this.confirmDeleteButton = page.getByRole('button', { name: 'Confirm' });
 
+        this.markOccupiedButton = page.getByRole('button', {name: 'Mark as occupied'});
+        this.markFreeButton = page.getByRole('button', {name: 'Mark as free'});
+
+
+        // QR Actions
+        this.blockQRButton = page.getByRole('button', { name: 'Block QR' });
+
+        this.unblockQRButton = page.getByRole('button', { name: 'Unblock QR' });
+
         
     }
 
@@ -147,6 +156,22 @@ export class TablesPage {
 
 }
 
+
+async markTableOccupied() {
+    await this.markOccupiedButton.click();
+}
+
+async markTableFree() {
+    await this.markFreeButton.click();
+}
+
+async blockQR() {
+    await this.blockQRButton.click();
+}
+
+async unblockQR() {
+    await this.unblockQRButton.click();
+}
     
     
 }
