@@ -46,6 +46,11 @@ export class TablesPage {
 
         this.unblockQRButton = page.getByRole('button', { name: 'Unblock QR' });
 
+        // Download QR
+        this.downloadQRButton = page.getByRole('button', { name: 'Download QR' });
+
+
+
         
     }
 
@@ -157,9 +162,6 @@ export class TablesPage {
 }
 
 
-async markTableOccupied() {
-    await this.markOccupiedButton.click();
-}
 
 async markTableFree() {
     await this.markFreeButton.click();
@@ -172,6 +174,15 @@ async blockQR() {
 async unblockQR() {
     await this.unblockQRButton.click();
 }
+
+async downloadQR() {
+    const downloadPromise = this.page.waitForEvent('download');
+
+    await this.downloadQRButton.click();
+
+    return await downloadPromise;
+}
+
     
     
 }
