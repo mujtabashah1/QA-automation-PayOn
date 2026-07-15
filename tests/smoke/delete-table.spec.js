@@ -7,7 +7,7 @@ import { users } from '../../test-data/users.js';
 
 test.describe('Tables Module', () => {
 
-    test('Search and View Table', async ({ page }) => {
+    test('Delete Table', async ({ page }) => {
 
         const loginPage = new LoginPage(page);
         const tablesPage = new TablesPage(page);
@@ -23,21 +23,13 @@ test.describe('Tables Module', () => {
         // Verify login
         await expect(page).toHaveURL(/profile/);
 
-        // Open Tables
+        // Navigate to Tables
         await tablesPage.navigateToTables();
 
-        // Search and View
-        await tablesPage.searchAndViewTable('mojo');
+        // Delete first table
+        await tablesPage.deleteTable();
 
-        // Verify details dialog/page opened
-        await expect(
-            tablesPage.closeButton
-        ).toBeVisible();
-
-        // Close details
-        await tablesPage.closeTableDetails();
-
-        // Verify user is still on Tables page
+        // Verify we're still on Tables page
         await expect(page).toHaveURL(/tables/);
 
     });

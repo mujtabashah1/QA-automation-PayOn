@@ -2,12 +2,11 @@ import { test, expect } from '@playwright/test';
 
 import { LoginPage } from '../../pages/LoginPage.js';
 import { TablesPage } from '../../pages/TablesPage.js';
-
 import { users } from '../../test-data/users.js';
 
-test.describe('Tables Module', () => {
+test.describe('Reservation Module', () => {
 
-    test('Search and View Table', async ({ page }) => {
+    test('View Reservation', async ({ page }) => {
 
         const loginPage = new LoginPage(page);
         const tablesPage = new TablesPage(page);
@@ -26,19 +25,19 @@ test.describe('Tables Module', () => {
         // Open Tables
         await tablesPage.navigateToTables();
 
-        // Search and View
-        await tablesPage.searchAndViewTable('mojo');
+        // Open Reservations
+        await tablesPage.openReservations();
 
-        // Verify details dialog/page opened
+        // View any reservation from the list (random each run)
+        await tablesPage.openReservation('random');
+
+        // Verify reservation details opened
         await expect(
-            tablesPage.closeButton
+            tablesPage.closeReservationButton
         ).toBeVisible();
 
-        // Close details
-        await tablesPage.closeTableDetails();
-
-        // Verify user is still on Tables page
-        await expect(page).toHaveURL(/tables/);
+        // Close Reservation
+        await tablesPage.closeReservation();
 
     });
 

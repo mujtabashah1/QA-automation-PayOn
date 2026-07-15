@@ -2,12 +2,11 @@ import { test, expect } from '@playwright/test';
 
 import { LoginPage } from '../../pages/LoginPage.js';
 import { TablesPage } from '../../pages/TablesPage.js';
-
 import { users } from '../../test-data/users.js';
 
-test.describe('Tables Module', () => {
+test.describe('Running Orders Module', () => {
 
-    test('Search and View Table', async ({ page }) => {
+    test('View Running Order Details', async ({ page }) => {
 
         const loginPage = new LoginPage(page);
         const tablesPage = new TablesPage(page);
@@ -26,19 +25,19 @@ test.describe('Tables Module', () => {
         // Open Tables
         await tablesPage.navigateToTables();
 
-        // Search and View
-        await tablesPage.searchAndViewTable('mojo');
+        // Open Running Order
+        await tablesPage.openRunningOrders();
 
-        // Verify details dialog/page opened
+        // View any order's details from the list (random each run)
+        await tablesPage.openOrderDetails('random');
+
+        // Verify order details opened
         await expect(
-            tablesPage.closeButton
+            tablesPage.closeOrderButton
         ).toBeVisible();
 
-        // Close details
-        await tablesPage.closeTableDetails();
-
-        // Verify user is still on Tables page
-        await expect(page).toHaveURL(/tables/);
+        // Close order details
+        await tablesPage.closeOrderDetails();
 
     });
 
