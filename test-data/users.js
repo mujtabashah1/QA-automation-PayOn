@@ -1,8 +1,8 @@
 export const users = {
 
     admin: {
-        email: 'munirbm01@gmail.com',
-        password: '7&Frost*Lion^92Q'
+        email: 'ak01@gmail.com',
+        password: 'Test@123'
     }
 
 };
