@@ -58,11 +58,20 @@ export class MenuPage {
 
         this.categoryDescriptionTextbox = page.getByRole('textbox', {name: 'Description'});
 
+        // NOTE: this locator is a guess (.nth(5)) and is the most likely reason
+        // category creation silently fails. Needs the real DOM to fix properly.
         this.categoryUploadButton = page.locator('div').filter({ hasText: 'Upload the Category Image' }).nth(5);
 
-        this.categoryImageInput =page.locator('input[type="file"]');
+        // .first() added to avoid strict-mode issues with multiple hidden file inputs
+        this.categoryImageInput = page.locator('input[type="file"]').first();
 
-        this.addCategoryButton =page.getByRole('button', {name: 'Add Category'});
+        this.addCategoryButton = page.getByRole('button', {name: 'Add Category'});
+
+        // Addon
+        this.addonButton = page.getByRole('button', { name: 'Addon' });
+        this.addAddonButton = page.getByRole('button', { name: 'Add Addon' });
+        this.addonNameTextbox = page.getByRole('textbox', { name: 'Addon Name' });
+        this.addonPriceTextbox = page.getByPlaceholder('Addon Price');
 
     }
 
@@ -127,29 +136,71 @@ export class MenuPage {
 
     async createCategory(category) {
 
-    const uniqueCategoryName =
-        `${category.prefix}_${Date.now()}`;
+        const uniqueCategoryName =
+            `${category.prefix}_${Date.now()}`;
 
-    await this.addNewCategoryButton.click();
+        await this.addNewCategoryButton.click();
 
-    await this.categoryNameTextbox.fill(
-        uniqueCategoryName
-    );
+        await this.categoryNameTextbox.fill(
+            uniqueCategoryName
+        );
 
-    await this.categoryDescriptionTextbox.fill(
-        category.description
-    );
+        await this.categoryDescriptionTextbox.fill(
+            category.description
+        );
 
-    await this.categoryUploadButton.click();
+        await this.categoryUploadButton.click();
 
-    await this.categoryImageInput.setInputFiles(
-        category.image
-    );
+        await this.categoryImageInput.setInputFiles(
+            category.image
+        );
 
-    await this.addCategoryButton.click();
+        await this.page.waitForTimeout(1000);
 
-    return uniqueCategoryName;
+        await this.addCategoryButton.click();
 
-}
+        return uniqueCategoryName;
+
+    }
+
+    async navigateToAddon() {
+
+        await this.addonButton.click();
+
+    }
+
+    async createAddon(addon) {
+
+        const uniqueAddonName =
+            `${addon.prefix}_${Date.now()}`;
+
+        // Opens the Add Addon modal
+        await this.addAddonButton.click();
+
+        await this.addonNameTextbox.fill(uniqueAddonName);
+
+        await this.addonPriceTextbox.fill(addon.price);
+
+        // Submits the modal (same button, reused)
+        await this.addAddonButton.click();
+
+        return uniqueAddonName;
+
+    }
+
+    // Verification helpers — check the item actually appears in the list,
+    // not just that the URL didn't change.
+
+    async isCategoryVisible(categoryName) {
+        return this.page.getByText(categoryName, { exact: true }).isVisible();
+    }
+
+    async isProductVisible(productName) {
+        return this.page.getByText(productName).isVisible({ timeout: 15000 });
+    }
+
+    async isAddonVisible(addonName) {
+        return this.page.getByText(addonName).isVisible({ timeout: 15000 });
+    }
 
 }

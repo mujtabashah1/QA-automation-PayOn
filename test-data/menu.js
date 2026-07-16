@@ -29,6 +29,9 @@ export const menu = {
 
     },   // <-- THIS COMMA WAS MISSING
 
+
+    
+
     category: {
 
         prefix: "Automation_Category",
@@ -37,6 +40,11 @@ export const menu = {
 
         image: "assets/tfc.jpg"
 
+    },
+
+     addon: {
+        prefix: "Addon",
+        price: "1234"
     }
 
 };

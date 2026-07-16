@@ -44,9 +44,12 @@ test.describe('Menu Module', () => {
 
         console.log("Created Product:", createdProduct);
 
-        // Verify User stays on Menu Page
+        // Verify user stays on Menu Page
 
         await expect(page).toHaveURL(/menu/);
+
+        // Verify the product was actually created and appears in the list
+        await expect(page.getByText(createdProduct)).toBeVisible({ timeout: 15000 });
 
     });
 
