@@ -73,11 +73,6 @@ export class MenuPage {
         this.addonNameTextbox = page.getByRole('textbox', { name: 'Addon Name' });
         this.addonPriceTextbox = page.getByPlaceholder('Addon Price');
 
-
-        // Search Dish
-
-        this.searchDishTextbox = page.getByRole('textbox', {name: 'Search dishes...'});
-
     }
 
     async navigateToMenu() {
@@ -85,20 +80,6 @@ export class MenuPage {
         await this.menuButton.click();
 
     }
-
-    async searchDish(productName) {
-
-    await this.searchDishTextbox.fill(productName);
-
-}
-
-    dishHeading(productName) {
-
-    return this.page.getByRole('heading', {name: productName});
-
-}
-
-
 
     async createProduct(product) {
 

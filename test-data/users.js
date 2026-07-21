@@ -1,8 +1,13 @@
 export const users = {
 
     admin: {
-        email: 'ak01@gmail.com',
-        password: 'Test@123'
+        email: 'automation@gmail.com',
+        password: 'Ppassword@123'
+    },
+
+     menuManager: {
+        email: 'automation@gmail.com',
+        password: 'Ppassword@123'
     }
 
 };

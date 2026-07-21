@@ -27,7 +27,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 
     use: {
-    baseURL: 'https://pizza-express.payon.app/login',
+    baseURL: 'https://pizza-express.payon.app',
     trace: 'on-first-retry',
     headless: false,
   },
@@ -89,4 +89,3 @@ projects: [
   //   reuseExistingServer: !process.env.CI,
   // },
 });
-

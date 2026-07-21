@@ -9,7 +9,7 @@ export class LoginPage {
     }
 
     async goto() {
-        await this.page.goto('https://pizza-express.payon.app/login');
+        await this.page.goto('/login');
     }
 
     async login(email, password) {
