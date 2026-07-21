@@ -12,6 +12,14 @@ export class FinancePage {
             name: 'Summary'
         });
 
+        this.paymentsTab = page.getByRole('button', {
+            name: 'Payments'
+        });
+
+        this.settlementsTab = page.getByRole('button', {
+            name: 'Settlements'
+        });
+
         this.netSalesPeriodDropdown =
             page.getByTestId('net-sales-period');
 
@@ -33,6 +41,10 @@ export class FinancePage {
             'Loading Transactions'
         );
 
+        this.loadingPaymentsText = page.getByText(
+            'Loading Payments'
+        );
+
         this.receiptButtons = page.getByRole('button', {
             name: 'Receipt'
         });
@@ -43,6 +55,26 @@ export class FinancePage {
 
         this.downloadReceiptButton = page.getByRole('button', {
             name: 'Download Receipt'
+        });
+
+        this.searchTextbox = page.getByRole('textbox', {
+            name: 'Search...'
+        });
+
+        this.refundViaPSPButton = page.getByRole('button', {
+            name: 'Refund via PSP'
+        });
+
+        this.confirmRefundButton = page.getByRole('button', {
+            name: /Yes, Process Refund|Process Refund/
+        });
+
+        this.refundAmountDropdown = page.getByRole('combobox').filter({
+            hasText: 'Refund amount'
+        });
+
+        this.exportXlsButton = page.getByRole('button', {
+            name: 'Export XLS'
         });
     }
 
@@ -60,6 +92,46 @@ export class FinancePage {
 
         await this.netSalesPeriodDropdown.waitFor({
             state: 'visible'
+        });
+
+    }
+
+    async navigateToPayments() {
+
+        await this.financeLink.click();
+
+        await this.page.waitForURL(/\/payments|\/finance|\/summary/);
+
+        await this.paymentsTab.waitFor({
+            state: 'visible'
+        });
+
+        await this.paymentsTab.click();
+
+        await this.page.getByRole('heading', {
+            name: 'Payments'
+        }).waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+    }
+
+    async navigateToSettlements() {
+
+        await this.financeLink.click();
+
+        await this.page.waitForURL(/\/payments|\/finance|\/summary/);
+
+        await this.settlementsTab.waitFor({
+            state: 'visible'
+        });
+
+        await this.settlementsTab.click();
+
+        await this.exportXlsButton.waitFor({
+            state: 'visible',
+            timeout: 45000
         });
 
     }
@@ -220,6 +292,190 @@ export class FinancePage {
         const downloadPromise = this.page.waitForEvent('download');
 
         await this.downloadReceiptButton.click();
+
+        return downloadPromise;
+
+    }
+
+    async searchTransaction(searchText) {
+
+        await this.searchTextbox.waitFor({
+            state: 'visible'
+        });
+
+        await this.searchTextbox.click();
+
+        await this.searchTextbox.fill(searchText);
+
+    }
+
+    transactionRowById(transactionId) {
+
+        return this.page.getByText(new RegExp(`^${transactionId}\\D`));
+
+    }
+
+    transactionRowByText(transactionText) {
+
+        return this.page.getByText(transactionText);
+
+    }
+
+    async openTransactionById(transactionId) {
+
+        const transactionRow = this.transactionRowById(transactionId);
+
+        await transactionRow.waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await transactionRow.click();
+
+    }
+
+    async openTransactionByRowText(transactionText) {
+
+        const transactionRow =
+            this.transactionRowByText(transactionText);
+
+        await transactionRow.waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await transactionRow.click();
+
+    }
+
+    async openRandomSearchedTransaction(prefix) {
+
+        await this.searchTransaction(prefix);
+
+        if (await this.loadingTransactionsText.isVisible()) {
+
+            await this.loadingTransactionsText.waitFor({
+                state: 'hidden',
+                timeout: 45000
+            });
+
+        }
+
+        const matchingTransactionIds =
+            await this.page.getByText(
+                new RegExp(`^${prefix}\\d{2}$`)
+            ).allInnerTexts();
+
+        if (!matchingTransactionIds.length) {
+            throw new Error(
+                `No transaction IDs found for prefix "${prefix}"`
+            );
+        }
+
+        const randomIndex = Math.floor(
+            Math.random() * matchingTransactionIds.length
+        );
+
+        const selectedTransactionId =
+            matchingTransactionIds[randomIndex].trim();
+
+        await this.openTransactionById(selectedTransactionId);
+
+        return selectedTransactionId;
+
+    }
+
+    async refundViaPSP() {
+
+        await this.refundViaPSPButton.waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await this.refundViaPSPButton.click();
+
+        await this.confirmRefundButton.waitFor({
+            state: 'visible'
+        });
+
+        await this.confirmRefundButton.click();
+
+    }
+
+    orderRow(orderText) {
+
+        return this.page.getByText(orderText).first();
+
+    }
+
+    async openOrder(orderText) {
+
+        const orderRow = this.orderRow(orderText);
+
+        await orderRow.waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await orderRow.click();
+
+    }
+
+    async selectFullRefundAmount() {
+
+        await this.refundAmountDropdown.waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await this.refundAmountDropdown.click();
+
+        await this.page.getByText('Refund (Full)').click();
+
+    }
+
+    async requestRefund() {
+
+        await this.page.getByRole('button', {
+            name: 'Request Refund'
+        }).click();
+
+        await this.confirmRefundButton.waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await this.confirmRefundButton.click();
+
+    }
+
+    refundedStatus() {
+
+        return this.page.getByText('Refunded').first();
+
+    }
+
+    async waitForRefundedOnCurrentPage() {
+
+        await this.page.waitForTimeout(5000);
+
+        await this.refundedStatus().waitFor({
+            state: 'visible',
+            timeout: 15000
+        });
+
+    }
+
+    async exportXls() {
+
+        await this.exportXlsButton.waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        const downloadPromise = this.page.waitForEvent('download');
+
+        await this.exportXlsButton.click();
 
         return downloadPromise;
 

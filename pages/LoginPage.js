@@ -27,6 +27,14 @@ export class LoginPage {
     async waitForSuccessfulLogin(timeout = 15000) {
 
         await this.page.waitForURL(/\/profile/, {
+            timeout,
+            waitUntil: 'commit'
+        });
+
+        await this.page.getByRole('link', {
+            name: 'Finance'
+        }).waitFor({
+            state: 'visible',
             timeout
         });
 

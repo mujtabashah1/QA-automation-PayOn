@@ -15,7 +15,17 @@ export const finance = {
     },
 
     receiptTransaction: {
-        rowText: '5183JJLiciousCardJul/21,/'
+        rowText: '5197Test table 22CashJul/21,/'
+    },
+
+    searchTransaction: {
+        transactionId: '5184',
+        rowText: '5184Abdullah new TableCardJul'
+    },
+
+    paymentsRefund: {
+        orderText: 'Order24166',
+        refundType: 'Refund (Full)'
     }
 
 };
