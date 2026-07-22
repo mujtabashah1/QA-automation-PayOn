@@ -36,6 +36,18 @@ export class OrdersPage {
         this.markAsServedButton = page.getByRole('button', {
             name: 'Mark as Served'
         });
+
+        this.cancelOrderButton = page.getByRole('button', {
+            name: 'Cancel Order'
+        });
+
+        this.cancelReasonTextbox = page.getByRole('textbox', {
+            name: /Please enter the reason for/
+        });
+
+        this.confirmCancelButton = page.getByRole('button', {
+            name: 'Confirm'
+        });
     }
 
     async navigateToOrders() {
@@ -141,6 +153,28 @@ export class OrdersPage {
         });
 
         await this.servedTab.click();
+
+    }
+
+    async cancelFirstOrder(cancelReason) {
+
+        await this.cancelOrderButton.first().waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await this.cancelOrderButton.first().click();
+
+        await this.cancelReasonTextbox.waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await this.cancelReasonTextbox.fill(cancelReason);
+
+        await this.confirmCancelButton.click();
+
+        await this.page.waitForTimeout(3000);
 
     }
 

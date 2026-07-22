@@ -8,6 +8,10 @@ export const orders = {
 
     search: {
         tableName: 'table 21'
+    },
+
+    cancelOrder: {
+        reason: 'cancel by automation'
     }
 
 };
