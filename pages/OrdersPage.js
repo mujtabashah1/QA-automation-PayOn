@@ -14,6 +14,28 @@ export class OrdersPage {
             });
 
         this.summaryCardFilterDropdowns = page.getByRole('combobox');
+
+        this.searchTextbox = page.getByRole('textbox', {
+            name: 'Search...'
+        });
+
+        this.readyTab = page.getByRole('button', {
+            name: 'Ready',
+            exact: true
+        });
+
+        this.servedTab = page.getByRole('button', {
+            name: 'Served',
+            exact: true
+        });
+
+        this.markAsReadyButton = page.getByRole('button', {
+            name: 'Mark as Ready'
+        });
+
+        this.markAsServedButton = page.getByRole('button', {
+            name: 'Mark as Served'
+        });
     }
 
     async navigateToOrders() {
@@ -25,6 +47,27 @@ export class OrdersPage {
         await this.summaryCardFilterDropdowns.first().waitFor({
             state: 'visible',
             timeout: 45000
+        });
+
+    }
+
+    async searchTable(searchText) {
+
+        await this.searchTextbox.waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await this.searchTextbox.click();
+
+        await this.searchTextbox.fill(searchText);
+
+    }
+
+    tableResult(tableName) {
+
+        return this.page.getByText(tableName, {
+            exact: false
         });
 
     }
@@ -54,6 +97,50 @@ export class OrdersPage {
         await dropdown.click();
 
         await this.dropdownOption(optionText).click();
+
+    }
+
+    async markOrderReady() {
+
+        await this.markAsReadyButton.first().waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await this.markAsReadyButton.first().click();
+
+    }
+
+    async openReadyTab() {
+
+        await this.readyTab.waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await this.readyTab.click();
+
+    }
+
+    async markOrderServed() {
+
+        await this.markAsServedButton.first().waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await this.markAsServedButton.first().click();
+
+    }
+
+    async openServedTab() {
+
+        await this.servedTab.waitFor({
+            state: 'visible',
+            timeout: 45000
+        });
+
+        await this.servedTab.click();
 
     }
 

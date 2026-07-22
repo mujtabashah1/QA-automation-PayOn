@@ -4,6 +4,10 @@ export const orders = {
         firstCard: 'This Week',
         secondCard: 'Last Week',
         thirdCard: 'This Month'
+    },
+
+    search: {
+        tableName: 'table 21'
     }
 
 };
